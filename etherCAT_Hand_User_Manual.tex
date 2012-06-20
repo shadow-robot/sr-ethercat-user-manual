@@ -102,7 +102,7 @@
 \newcommand{\filename}[1]{changelogs/file#1}
 \newcommand{\buildchangelog}
 {%
-  \foreach \i in {00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, ...,19}%
+  \foreach \i in {0, ...,99}%
   {%
     \expandafter\IfFileExists\expandafter{\expandafter\filename\expandafter\i}%
     {%

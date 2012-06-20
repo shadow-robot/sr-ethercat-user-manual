@@ -77,7 +77,7 @@ endif
 # .PHONY names all targets that aren't filenames
 .PHONY: all clean pdf view
 
-all: pdf $(AFTERALL)
+all: $(BEFOREALL) pdf $(AFTERALL)
 
 pdf: $(PDFTARGETS)
 

@@ -1,13 +1,10 @@
 SHELL := /bin/bash
 
+BEFOREALL=copy
 TARGET=etherCAT_Hand_User_Manual
 include Makefile.include
 
-STACKS=(shadow_robot shadow_robot_ethercat)
+.PHONY: copy
 
 copy:
-  for (( i = 0 ; i < ${#STACKS[@]} ; i++ )) do
-    if [ -f `rosstack find ${STACKS[$i]}`/changelog.tex ] then
-      cp `rosstack find ${STACKS[$i]}`/changelog.tex changelogs/file${i}.tex
-    fi
-  done;
+	./get_changelogs.sh
