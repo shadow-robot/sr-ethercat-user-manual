@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 \usepackage[pdftex]{graphicx}
 \usepackage{hyperref}
 \hypersetup{
@@ -8,10 +8,12 @@
     linkcolor=black,
     urlcolor=black
 }
-
+\usepackage[text={16cm,24cm}]{geometry}
 \usepackage{pgffor}
 \usepackage{filecontents}% Used so that the external files can be placed in this file
-
+\setlength{\parskip}{\baselineskip}
+\usepackage{color}
+\newcommand{\todo}[1]{\colorbox{yellow}{\textbf{#1}}}
 
 \title{\textbf{EtherCAT Dextrous Hand} \\
 - User Manual -}
@@ -39,13 +41,14 @@
 
 \section{Installing our Software}
 \label{sec:install}
+\par For a typical user, we really recommend installing our software directly from the apt repository (see section \ref{sec:install_apt}). This will ensure that you keep the latest released software on your computer.
 
-\newpage
+\par However if you plan to modify some parts of our code, you can use an overlay to install some of the sources from our publicly available Launchpad repository on top of your existing installation.
 
 \subsection{From our apt repository (recommended)}
 \label{sec:install_apt}
+\todo{Mark complete this section once we've setup the public apt-repo for our stacks}
 
-\newpage
 
 \subsection{From sources}
 \label{sec:install_src}
@@ -55,17 +58,11 @@
 \section{Running our code}
 \label{sec:running-our-code}
 
-\newpage
-
 \subsection{Starting the real hand}
 \label{sec:starting-real-hand}
 
-\newpage
-
 \subsection{Starting the simulated robot}
 \label{sec:start-simul-hand}
-
-\newpage
 
 \subsection{Checking it works}
 \label{sec:checking-it-works}
