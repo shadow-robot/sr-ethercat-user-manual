@@ -13,7 +13,7 @@
 \usepackage[text={16cm,24cm}]{geometry}
 \usepackage{pgffor}
 \usepackage{filecontents}% Used so that the external files can be placed in this file
-\setlength{\parskip}{\baselineskip}
+%\setlength{\parskip}{\baselineskip}
 \usepackage{color}
 \definecolor{shadowgrey}{rgb}{0.18,0.2,0.21}
 \usepackage{listings}
@@ -27,6 +27,7 @@
 \newcommand{\todo}[1]{\colorbox{yellow}{\textbf{TODO: #1} fill this in!}}
 \newcommand{\linuxtilde}{\raise.20ex\hbox{$\scriptstyle\mathtt{\sim}$}}
 \newcommand{\link}[1]{\hyperref[sec:#1]{\textbf{section~\ref*{sec:#1}}}}
+\newcommand{\betterhref}[2]{\href{#1}{#2}\footnote{url: #1}}
 
 \title{\textbf{EtherCAT Dextrous Hand} \\
 - User Manual -}
@@ -50,17 +51,17 @@
 \section{Overview}
 \label{sec:overview}
 
-\par This user manual will get you started with using our EtherCAT hand or simulated robots. We'll guide you through installing the code in the \link{install}, show you some basic commands and code samples in \link{running-our-code}, and explain where to find things in \link{navigate}. This guide ends with some pointers to essential documentation you should read (\link{where-to-go}), and some troubleshooting tips (\link{what-do-if}).
+\par This user manual will get you started with using our EtherCAT hand or simulated robots. We'll guide you through installing the code in the \link{install}, show you some basic commands and code samples in \link{running-our-code}, and explain where to find things in \link{navigate}. This guide ends with some pointers to essential documentation you should read (\link{where-to-go}), and some troubleshooting tips (\link{what-do-if}). \\
 
-\par If you have any questions, don't hesitate to contact us at: \texttt{software@shadowrobot.com}.
+\par If you have any questions, don't hesitate to contact us at: \texttt{software@shadowrobot.com}.\\
 
 \newpage
 
 \section{Installing our Software}
 \label{sec:install}
-\par For a typical user, we really recommend installing our software directly from the apt repository (see section \ref{sec:install-apt}). This will ensure that you keep the latest released software on your computer.
+\par For a typical user, we really recommend installing our software directly from the apt repository (see section \ref{sec:install-apt}). This will ensure that you keep the latest released software on your computer.\\
 
-\par We assume you've already installed ROS electric, as detailed on \href{http://www.ros.org/wiki/electric/Installation/Ubuntu}{the ROS Wiki}.
+\par We assume you've already installed ROS electric, as detailed on \betterhref{http://www.ros.org/wiki/electric/Installation/Ubuntu}{the ROS Wiki}.\\
 
 \par However if you plan to modify some parts of our code, you can use an overlay to install some of the sources from our publicly available Launchpad repository on top of your existing installation.
 
@@ -70,15 +71,15 @@
 
 \subsubsection{Install a sr\_config overlay for the EtherCAT Hand}
 \label{sec:install-cfg}
-\par If you have an EtherCAT Hand, you should create an overlay for the \texttt{sr\_config} stack: this stack contains all the different configuration files which can be modified to reflect your specific system. You shouldn't use the one installed by default as they are defined for the simulated hand.
+\par If you have an EtherCAT Hand, you should create an overlay for the \texttt{sr\_config} stack: this stack contains all the different configuration files which can be modified to reflect your specific system. You shouldn't use the one installed by default as they are defined for the simulated hand.\\
 
 \par To create this overlay, just follow the \link{install-src}.
 
 \subsection{From sources}
 \label{sec:install-src}
-\par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in the \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one.} to use the source version.
+\par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in the \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one.} to use the source version.\\
 
-\par To create an overlay, we'll use the \href{http://ros.org/wiki/rosinstall}{rosinstall} utility. In this example, we'll overlay the \href{http://launchpad.net/sr-config}{sr\_config} stack, using trunk version of the code hosted on launchpad using \href{http://bazaar.canonical.com}{bzr}: \texttt{lp:sr-config}.
+\par To create an overlay, we'll use the \betterhref{http://ros.org/wiki/rosinstall}{rosinstall} utility. In this example, we'll overlay the \betterhref{http://launchpad.net/sr-config}{sr\_config} stack, using trunk version of the code hosted on launchpad using \betterhref{http://bazaar.canonical.com}{bzr}: \texttt{lp:sr-config}.
 
 \begin{itemize}
 \item First we need to install the rosinstall utility if you haven't done so already:
@@ -114,9 +115,9 @@
 \end{itemize}
 
 \subsubsection{Available rosinstall files}
-\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot.rosinstall}{here}.
+\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot.rosinstall}.\\
 
-\todo{Mark} May be we should have a simpler shadow\_robot.rosinstall which doesn't contain the unstable stacks (sr-demo / denso / object-manip / sr-manip)?
+\todo{Mark} May be we should have a simpler shadow\_robot.rosinstall which doesn't contain the unstable stacks (sr-demo / denso / object-manip / sr-manip)?\\
 
 \par Once you've downloaded the code using the \texttt{rosinstall} commands described previously, you can build all our stacks:
   \begin{lstlisting}[escapeinside='']
@@ -144,13 +145,19 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \section{Navigating our code}
 \label{sec:navigate}
 
+\todo{Mark} Just describe quickly the way the stacks are organised (for shadow robot), name the main packages and give quick description + explain how the settings are set.
+
 \subsection{Important Packages}
 \label{sec:important-packages}
-
+\begin{itemize}
+\item \textbf{sr\_hand:} Contains the code and the different launch files for the simulated Hand.
+\item \textbf{sr\_edc\_launch:} Contains the main launch file for the EtherCAT Hand.
+\end{itemize}
 
 
 \subsection{Where to find the settings}
 \label{sec:where-find-settings}
+\par We moved all the configuration to the \texttt{sr\_config} stack. The idea is to isolate the data that is specific to the user in a given stack, this way you can easily create an overlay, as described in \link{install}, to make sure your specific configuration is not overwritten by an update.
 
 \subsubsection{Specifying system parameters}
 \label{sec:spec-system-param}
@@ -167,7 +174,7 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \label{sec:starting-real-hand}
 
 \subsubsection{Setting up the Ethernet port}
-\par The first time you plug an EtherCAT Hand, you probably need to check on which Ethernet port the hand is connected (you probably have 2 network ports in your computer, one of them would typically be connected to the network, the other one to the hand).
+\par The first time you plug an EtherCAT Hand, you probably need to check on which Ethernet port the hand is connected (you probably have 2 network ports in your computer, one of them would typically be connected to the network, the other one to the hand).\\
 
 \par An easy way to see which port the hand is using is to unplug the hand network cable from your computer and then plug it back in. You can now type \texttt{dmesg} and you should see a line saying which port has just been plugged in, for example, in the lines below, you see that \texttt{eth1} is used by the hand:
   \begin{lstlisting}[escapeinside='']
@@ -233,7 +240,7 @@ effort: [0.0, 0.0, 0.0, 0.0, ...]
 \todo{Mark} May be check if we can have a simple rviz config that shows the robot and explain how to load it (it's easier than explaining to add the robot model etc...) + add screenshot?
 
 \subsubsection{Sending Commands to the Hand}
-\par You can easily control the different joints of the Hand: each of the joint is controlled by a controller. Each of those controllers have a \texttt{/command} and a \texttt{/state} topic. The \texttt{/state} topic is printing useful debug information regarding the controllers, while the \texttt{/command} topic is used to send new targets to the controllers.
+\par You can easily control the different joints of the Hand: each of the joint is controlled by a controller. Each of those controllers have a \texttt{/command} and a \texttt{/state} topic. The \texttt{/state} topic is printing useful debug information regarding the controllers, while the \texttt{/command} topic is used to send new targets to the controllers.\\
 
 \par To identify the topic on which you want to send the target, you can use the \texttt{rostopic list} command. Let's say we want to send a target to \texttt{FFJ3}:
   \begin{lstlisting}[escapeinside='']
@@ -256,9 +263,11 @@ To do this, we can simply use the \texttt{rostopic pub} command. For example, to
 
 \section{Where to go next}
 \label{sec:where-to-go}
-\par The \href{http://ros.org/wiki}{ROS wiki} is probably the best place to start learning about ROS. We strongly recommend going through the excellent \href{http://ros.org/wiki/ROS/StartGuide}{ROS Start Guide}, especially the set of \href{http://ros.org/wiki/ROS/Tutorials}{tutorials}.
+\par The \href{http://ros.org/wiki}{ROS wiki} is probably the best place to start learning about ROS. We strongly recommend going through the excellent \href{http://ros.org/wiki/ROS/StartGuide}{ROS Start Guide}, especially the set of \href{http://ros.org/wiki/ROS/Tutorials}{tutorials}.\\
 
-\par You should also look at some of our tutorials for the \href{http://ros.org/wiki/shadow_robot_etherCAT/Tutorials}{EtherCAT Hand}.
+\par You should also look at some of our tutorials for the \href{http://ros.org/wiki/shadow_robot_etherCAT/Tutorials}{EtherCAT Hand}.\\
+
+\par We'd be delighted to get your contributions (patches, nice demos, etc...). Don't forget our software is open-source, so if you want to contribute, you should probably check this \href{http://ros.org/wiki/shadow_robot#Contributing}{wiki page} out.
 \newpage
 
 \section{What to do if it doesn't work}
@@ -304,6 +313,8 @@ data: 1.0
 
 \section{Changelog}
 \label{sec:changelog}
+
+\todo{Mark} Just add a changelog.tex to each of our stack containing a quick description?
 
 \newcommand{\filename}[1]{changelogs/file#1}
 \newcommand{\buildchangelog}
