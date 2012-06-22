@@ -215,11 +215,48 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 
 \section{Where to go next}
 \label{sec:where-to-go}
+\par The \href{http://ros.org/wiki}{ROS wiki} is probably the best place to start learning about ROS. We strongly recommend going through the excellent \href{http://ros.org/wiki/ROS/StartGuide}{ROS Start Guide}, especially the set of \href{http://ros.org/wiki/ROS/Tutorials}{tutorials}.
 
 \newpage
 
 \section{What to do if it doesn't work}
 \label{sec:what-do-if}
+
+\subsection{Check your ROS setup}
+\par You can use very simple examples to check different things:
+\begin{itemize}
+\item Check you can access our stacks (if this command doesn't work, make sure you've installed the code properly and sourced the generated setup.bash as described in \link{install}):
+  \begin{lstlisting}[escapeinside='', language=Bash]
+> roscd shadow_robot
+  \end{lstlisting}
+
+\item Check you can publish and subscribe to a simple topic. You'll need to start each of the following commands in a separate terminal. The first command is used to start the rosmaster. The second one will publish some data on the \texttt{test} topic while the third command subscribes to the topic and print the output on the screen. If this test works, you should see the incoming data streaming in your third terminal.
+
+  \begin{lstlisting}[escapeinside='', language=Bash]
+#in terminal 1, start the rosmaster
+> roscore
+#in terminal 2 publish data at 5Hz on /test
+> rostopic pub /test std_msgs/Float64 -r 5 1.0
+#in terminal 3, subscribe to the /test topic
+# you should see the streaming data
+# stop it with Ctrl+c
+> rostopic echo /test
+data: 1.0
+---
+data: 1.0
+---
+data: 1.0
+  \end{lstlisting}
+
+\item If all hope is lost, run the \href{http://ros.org/wiki/roswtf}{roswtf} utility.
+\end{itemize}
+
+\subsection{Use the ROS community}
+\label{sec:use-ros-community}
+\par A good thing to remember is that you're probably not the first one having run into this problem. You should check the ROS community website: \href{http://answers.ros.org}{answers.ros.org} and post your question if you can't find a relevant answer.
+
+\subsection{Contact us}
+\par Don't hesitate to contact us: \texttt{software@shadowrobot.com}.
 
 \newpage
 
