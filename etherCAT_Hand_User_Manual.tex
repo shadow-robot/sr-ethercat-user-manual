@@ -95,19 +95,19 @@
   \end{lstlisting}
 
 \item We're now going to create a workspace (in the \texttt{\linuxtilde/workspace} directory), based on your currently installed ROS system (we're assuming you're using ROS electric), and use the rosinstall file we created to download the code into it.
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > rosinstall '\linuxtilde'/workspace /opt/ros/electric/setup.bash
 > rosinstall '\linuxtilde'/workspace shadow_robot.rosinstall
   \end{lstlisting}
 
 \item To use the newly created environment, simply source the setup.bash created in the previous step (to have it sourced automatically when you open a new terminal, simply add it to your \texttt{\linuxtilde/.bashrc} as show on the second line).
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > source '\linuxtilde'/workspace/setup.bash
 > echo source '\linuxtilde'/workspace/setup.bash >> '\linuxtilde'/.bashrc
   \end{lstlisting}
 
 \item Finally, you can build the whole stack in one go using the \texttt{rosmake} command:
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > rosmake --rosdep-install --rosdep-yes sr_config
   \end{lstlisting}
 
@@ -119,7 +119,7 @@
 \todo{Mark} May be we should have a simpler shadow\_robot.rosinstall which doesn't contain the unstable stacks (sr-demo / denso / object-manip / sr-manip)?
 
 \par Once you've downloaded the code using the \texttt{rosinstall} commands described previously, you can build all our stacks:
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > rosmake --rosdep-install --rosdep-yes shadow_robot \
   shadow_robot_ethercat sr_contrib sr_visualization \
   sr_teleop
@@ -170,7 +170,7 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \par The first time you plug an EtherCAT Hand, you probably need to check on which Ethernet port the hand is connected (you probably have 2 network ports in your computer, one of them would typically be connected to the network, the other one to the hand).
 
 \par An easy way to see which port the hand is using is to unplug the hand network cable from your computer and then plug it back in. You can now type \texttt{dmesg} and you should see a line saying which port has just been plugged in, for example, in the lines below, you see that \texttt{eth1} is used by the hand:
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 [16661.901920] e1000e: eth1 NIC Link is Down
 [16666.460518] e1000e: eth1 NIC Link is Up 1000 Mbps Full Duplex
   \end{lstlisting}
@@ -179,7 +179,7 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \begin{itemize}
 \item Make sure you've created your overlay for the \texttt{sr\_config} stack as described in the \link{install-cfg}.
 \item Let's open the configuration file:
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > roscd sr_config
 > cd bashrc
 > gedit env_variables.bashrc
@@ -190,7 +190,7 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 
 \subsubsection{Starting the driver}
 \par You can now start the driver. To be able to run the driver, you need to elevate the permissions to root access:
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 #elevate permissions
 > sudo -s
 > roslaunch sr_edc_launch sr_edc.launch
@@ -199,17 +199,58 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \subsection{Starting the simulated robot}
 \label{sec:start-simul-hand}
 \par To start the simulated robot you can simply run:
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > roslaunch sr_hand gazebo_hand_motor.launch
   \end{lstlisting}
 
 \par Or if you want a simulated Shadow Arm as well as our hand:
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > roslaunch sr_hand gazebo_arm_and_hand_motor.launch
   \end{lstlisting}
 
 \subsection{Checking it works}
 \label{sec:checking-it-works}
+
+\subsubsection{Reading data out of the Hand}
+\par You can first have a look at the data coming out of the hand. The data is published on the \texttt{/joint\_states} topic (or \texttt{/gazebo/joint\_states} for the simulated hand). You'll see the incoming data streaming in your console. You have access to the joint names as well as the current positions, velocity and effort for each joint as shown below (stop with \texttt{ctrl+c}):
+  \begin{lstlisting}[escapeinside='']
+> rostopic echo /joint_states
+---
+header:
+  seq: 7235
+  stamp:
+    secs: 73
+    nsecs: 785000000
+  frame_id: ''
+name: ['WRJ2', 'WRJ1', 'FFJ4', 'FFJ3', 'FFJ1', 'FFJ2', ...]
+position: [-0.007345193851005405, 0.0007282010249589632, ...]
+velocity: [0.0002164649710794793, 0.0015999764385997265, ...]
+effort: [0.0, 0.0, 0.0, 0.0, ...]
+  \end{lstlisting}
+
+\par You should also be able to visualise the current state of the Hand using \href{ros.org/wiki/rviz}{rviz}.
+
+\todo{Mark} May be check if we can have a simple rviz config that shows the robot and explain how to load it (it's easier than explaining to add the robot model etc...) + add screenshot?
+
+\subsubsection{Sending Commands to the Hand}
+\par You can easily control the different joints of the Hand: each of the joint is controlled by a controller. Each of those controllers have a \texttt{/command} and a \texttt{/state} topic. The \texttt{/state} topic is printing useful debug information regarding the controllers, while the \texttt{/command} topic is used to send new targets to the controllers.
+
+\par To identify the topic on which you want to send the target, you can use the \texttt{rostopic list} command. Let's say we want to send a target to \texttt{FFJ3}:
+  \begin{lstlisting}[escapeinside='']
+> rostopic list | grep ffj3
+/sh_ffj3_mixed_position_velocity_controller/command
+/sh_ffj3_mixed_position_velocity_controller/state
+  \end{lstlisting}
+
+\par This means that we're going to publish our target on the topic:\\
+\hspace*{40pt} \texttt{/sh\_ffj3\_mixed\_position\_velocity\_controller/command}.\\
+To do this, we can simply use the \texttt{rostopic pub} command. For example, to send a target of 1 rad to \texttt{FFJ3} at 10Hz:
+  \begin{lstlisting}[escapeinside='']
+> rostopic pub /sh_ffj3_mixed_position_velocity_controller/command \
+  std_msgs/Float64 -r 10 1.0
+  \end{lstlisting}
+
+\par To see a code example you can have a look at the package \texttt{sr\_ethercat\_example}.
 
 \newpage
 
@@ -217,6 +258,7 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \label{sec:where-to-go}
 \par The \href{http://ros.org/wiki}{ROS wiki} is probably the best place to start learning about ROS. We strongly recommend going through the excellent \href{http://ros.org/wiki/ROS/StartGuide}{ROS Start Guide}, especially the set of \href{http://ros.org/wiki/ROS/Tutorials}{tutorials}.
 
+\par You should also look at some of our tutorials for the \href{http://ros.org/wiki/shadow_robot_etherCAT/Tutorials}{EtherCAT Hand}.
 \newpage
 
 \section{What to do if it doesn't work}
@@ -226,13 +268,13 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \par You can use very simple examples to check different things:
 \begin{itemize}
 \item Check you can access our stacks (if this command doesn't work, make sure you've installed the code properly and sourced the generated setup.bash as described in \link{install}):
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 > roscd shadow_robot
   \end{lstlisting}
 
 \item Check you can publish and subscribe to a simple topic. You'll need to start each of the following commands in a separate terminal. The first command is used to start the rosmaster. The second one will publish some data on the \texttt{test} topic while the third command subscribes to the topic and print the output on the screen. If this test works, you should see the incoming data streaming in your third terminal.
 
-  \begin{lstlisting}[escapeinside='', language=Bash]
+  \begin{lstlisting}[escapeinside='']
 #in terminal 1, start the rosmaster
 > roscore
 #in terminal 2 publish data at 5Hz on /test
