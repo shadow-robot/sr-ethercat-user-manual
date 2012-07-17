@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #first we delete the existing changelog:
-rm changelogs/*
+rm -rf changelogs/*
 
 TMP_STACKS=`awk < $1 ' $1=="local-name:" { print $2 }'`
 #split in an array

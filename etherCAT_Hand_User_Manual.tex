@@ -78,7 +78,24 @@
 
 \subsection{From our apt repository (recommended)}
 \label{sec:install-apt}
-\todo{Mark}
+\par You can install pre-built packages for \betterhref{http://releases.ubuntu.com/lucid/}{Ubuntu 10.04}. This is the easiest way of installing our software. You'll also receive updates automatically whenever you update your system.
+
+\begin{itemize}
+\item First you need to add our repository to your \texttt{sources.list}:
+  \begin{lstlisting}
+> sudo su -c 'echo "deb http://packages.shadow.local/ubuntu lucid \
+   main" > /etc/apt/sources.list.d/shadow.list
+> wget -O - http://packages.shadow.local/repo-key.pub | \
+   sudo apt-key add -
+> sudo apt-get update
+  \end{lstlisting}
+
+\item You can now install our stacks: \todo{NEED ALL THE PACKAGES}
+  \begin{lstlisting}
+> sudo apt-get install ros-electric-shadow-robot
+  \end{lstlisting}
+
+\end{itemize}
 
 \subsubsection{Install a sr\_config overlay for the EtherCAT Hand}
 \label{sec:install-cfg}
@@ -126,9 +143,7 @@
 \end{itemize}
 
 \subsubsection{Available rosinstall files}
-\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot.rosinstall}.\\
-
-\todo{Mark} May be we should have a simpler shadow\_robot.rosinstall which doesn't contain the unstable stacks (sr-demo / denso / object-manip / sr-manip)?\\
+\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot-simple.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot-simple.rosinstall}.\\
 
 \par Once you've downloaded the code using the \texttt{rosinstall} commands described previously, you can build all our stacks:
   \begin{lstlisting}[escapeinside='']
@@ -156,13 +171,22 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \section{Navigating our code}
 \label{sec:navigate}
 
-\todo{Mark} Just describe quickly the way the stacks are organised (for shadow robot), name the main packages and give quick description + explain how the settings are set.
+\par Our code is splitted into different stacks, each containing a set of packages:
+\begin{itemize}
+\item \textbf{shadow\_robot:} contains simulation software, utility packages, ... This is the core stack.
+\item \textbf{shadow\_robot\_ethercat:} contains the code for running our etherCAT hand.
+\item \textbf{sr\_contrib:} contains experimental high level packages. If you write some interesting package, we'd be happy to add it to this stack.
+\item \textbf{sr\_visualization:} contains the GUI and visualisation tools.
+\item \textbf{sr\_teleop:} contains drivers for different tools used to teleoperate our hand (\betterhref{http://www.cyberglovesystems.com}{cyberglove}, ...)
+\item \textbf{sr\_config:} contains the config files. If you have one of our Hand, you should have an overlay of this config to make sure you don't loose your config when updating your system (as described in \link{install-src}).
+\end{itemize}
 
 \subsection{Important Packages}
 \label{sec:important-packages}
 \begin{itemize}
-\item \textbf{sr\_hand:} Contains the code and the different launch files for the simulated Hand.
+\item \textbf{sr\_hand:} Contains the code and the different launch files for the simulated Hand and the CAN hand.
 \item \textbf{sr\_edc\_launch:} Contains the main launch file for the EtherCAT Hand.
+\item \textbf{sr\_example:} Contains some simple code examples.
 \end{itemize}
 
 
@@ -172,9 +196,46 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 
 \subsubsection{Specifying system parameters}
 \label{sec:spec-system-param}
+\par The system parameters are specified in the file
+\href{http://bazaar.launchpad.net/~shadowrobot/sr-config/trunk/view/head:/bashrc/env_variables.bashrc}{env\_variables.bashrc}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-config/trunk/view/head:/bashrc/env\_variables.bashrc}. To load them automatically in your environment, please go to \link{import-vars}. This File is heavily commented and should be easy to modify to suit your installation (the default options should be ok for most users).
 
-\subsubsection{Specifying default controllers settings}
+  \begin{lstlisting}[title={\textbf{env\_variables.bashrc}}, upquote=true]
+#set to 1 to compile sr_hand and sr_tactiles with the gazebo interface
+export GAZEBO=1
+
+# set to 1 for one finger hands
+export ONE_FINGER=0
+
+# set to 1 for left hands
+export LEFT_HAND=0
+
+# set to 1 if you have a CAN hand
+export REAL_HAND=0
+
+# set to 1 if you have a CAN arm
+export REAL_ARM=0
+
+#set to 1 if you have a muscle arm or hand
+export VALVES=0
+
+#set to 1 if you want to build compatibility interface for etherCAT hand
+export ETHERCAT=0
+
+#specify which port is used for the etherCAT hand
+export ETHERCAT_PORT=eth1
+
+#set to 1 if you're using PWM control on the etherCAT hand motors by default
+export PWM_CONTROL=0
+
+#set to 1 if you want to have access to the internal firmware repository
+#NOTE: for Shadow employees only for the time being
+export INTERNAL_FIRMWARE=0
+  \end{lstlisting}
+
+
+\subsubsection{Specifying default controllers settings, and other useful settings}
 \label{sec:spec-defa-contr}
+\par The controller settings (as well as the different mappings and polling rates for the etherCAT hand) can be found in the \textbf{sr\_ethercat\_hand\_config} package. You can modify the controller values which will be loaded by default by modifying the files in this package. For example if you want to modify the mixed position velocity controllers, you can open \textbf{sr\_edc\_mixed\_position\_velocity\_joint\_controllers.yaml} (in \textbf{controls/host}). We recommend using the controller tuner GUI plugin for tuning and saving those parameters.
 
 \newpage
 
@@ -246,9 +307,30 @@ velocity: [0.0002164649710794793, 0.0015999764385997265, ...]
 effort: [0.0, 0.0, 0.0, 0.0, ...]
   \end{lstlisting}
 
-\par You should also be able to visualise the current state of the Hand using \href{ros.org/wiki/rviz}{rviz}.
+\par You should also be able to visualise the current state of the robot using \betterhref{http://www.ros.org/wiki/rviz}{rviz}.
+\begin{center}
+\includegraphics[width=0.5\textwidth]{images/rviz.png}
+\end{center}
 
-\todo{Mark} May be check if we can have a simple rviz config that shows the robot and explain how to load it (it's easier than explaining to add the robot model etc...) + add screenshot?
+\subsubsection{Reading the tactile sensors}
+\par Depending on the configuration of your hand, you can have different models of tactile sensors. Your sensor type is automatically detected by the driver which then publishes the correct information on \texttt{/tactile} topic. The following command will output the data coming from the sensors on the screen.
+  \begin{lstlisting}[escapeinside='']
+> rostopic echo /tactile
+  \end{lstlisting}
+
+\begin{itemize}
+\item The fields from the Shadow PSTs are:
+  \subitem \textbf{int16[] pressure}: an array of integers containing the current pressure value for the sensors.
+  \subitem \textbf{int16[] temperature}: an array of integers containing the current temperature for the sensors.
+
+\item The fields from the Biotac sensors are:
+  \subitem \textbf{int16 pac0}: first pressure AC reading (this is used to detect pressure changes, behaves as a differential)
+  \subitem \textbf{int16 pac1}: second pressure AC reading
+  \subitem \textbf{int16 pdc}: pressure DC reading (this is proportional to the pressure exerted on the finger)
+  \subitem \textbf{int16 tac}: temperature AC reading (this is used to detect temperature changes, behaves as a differential)
+  \subitem \textbf{int16 tdc}: temperature DC reading (this is proportional to the temperature off the sensor)
+  \subitem \textbf{int16[19] electrodes}: the values for the electrodes of this tactile sensor (gives you information on which zone is being touched on the finger)
+\end{itemize}
 
 \subsubsection{Sending Commands to the Hand}
 \par You can easily control the different joints of the Hand: each of the joint is controlled by a controller. Each of those controllers have a \texttt{/command} and a \texttt{/state} topic. The \texttt{/state} topic is printing useful debug information regarding the controllers, while the \texttt{/command} topic is used to send new targets to the controllers.\\
@@ -269,6 +351,9 @@ To do this, we can simply use the \texttt{rostopic pub} command. For example, to
   \end{lstlisting}
 
 \par To see a code example you can have a look at the package \texttt{sr\_ethercat\_example}.
+
+\subsubsection{Getting information on the current state of the controllers}
+\par As you can see above, each controller publishes its own \texttt{/state} topic. This topic contains lots of useful information regarding the current state of the controller. If you subscribe to it, you'll be able to have access to the current target, position, error, derivative, etc...
 
 \newpage
 
@@ -324,8 +409,6 @@ data: 1.0
 
 \section{Changelog}
 \label{sec:changelog}
-
-\todo{Mark} Just add a changelog.tex to each of our stack containing a quick description?
 
 \newcommand{\filename}[1]{changelogs/file#1}
 \newcommand{\buildchangelog}
