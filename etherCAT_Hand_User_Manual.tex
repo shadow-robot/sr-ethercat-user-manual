@@ -62,7 +62,7 @@
 \section{Overview}
 \label{sec:overview}
 
-\par This user manual will get you started with using our EtherCAT hand or simulated robots. We'll guide you through installing the code in the \link{install}, show you some basic commands and code samples in \link{running-our-code}, and explain where to find things in \link{navigate}. This guide ends with some pointers to essential documentation you should read (\link{where-to-go}), and some troubleshooting tips (\link{what-do-if}). \\
+\par This user manual will get you started with using our EtherCAT hand or simulated robots. We'll guide you through installing the code in \link{install}, show you some basic commands and code samples in \link{running-our-code}, and explain where to find things in \link{navigate}. This guide ends with some pointers to essential documentation you should read (\link{where-to-go}), and some troubleshooting tips (\link{what-do-if}). \\
 
 \par If you have any questions, don't hesitate to contact us at: \texttt{software@shadowrobot.com}.\\
 
@@ -101,11 +101,11 @@
 \label{sec:install-cfg}
 \par If you have an EtherCAT Hand, you should create an overlay for the \texttt{sr\_config} stack: this stack contains all the different configuration files which can be modified to reflect your specific system. You shouldn't use the one installed by default as they are defined for the simulated hand.\\
 
-\par To create this overlay, just follow the \link{install-src}.
+\par To create this overlay, just follow \link{install-src}.
 
 \subsection{From sources}
 \label{sec:install-src}
-\par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in the \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one.} to use the source version.\\
+\par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one.} to use the source version.\\
 
 \par To create an overlay, we'll use the \betterhref{http://ros.org/wiki/rosinstall}{rosinstall} utility. In this example, we'll overlay the \betterhref{http://launchpad.net/sr-config}{sr\_config} stack, using trunk version of the code hosted on launchpad using \betterhref{http://bazaar.canonical.com}{bzr}: \texttt{lp:sr-config}.
 
@@ -256,7 +256,7 @@ export INTERNAL_FIRMWARE=0
 
 \par Now that we know which Ethernet port is used by the hand (\texttt{eth1} in our example), we can edit the interface in the system parameters, as shown in \link{spec-system-param}:
 \begin{itemize}
-\item Make sure you've created your overlay for the \texttt{sr\_config} stack as described in the \link{install-cfg}.
+\item Make sure you've created your overlay for the \texttt{sr\_config} stack as described in \link{install-cfg}.
 \item Let's open the configuration file:
   \begin{lstlisting}[escapeinside='']
 > roscd sr_config
@@ -354,6 +354,9 @@ To do this, we can simply use the \texttt{rostopic pub} command. For example, to
 
 \subsubsection{Getting information on the current state of the controllers}
 \par As you can see above, each controller publishes its own \texttt{/state} topic. This topic contains lots of useful information regarding the current state of the controller. If you subscribe to it, you'll be able to have access to the current target, position, error, derivative, etc...
+
+\subsubsection{Checking the diagnostics}
+\par The etherCAT Hand regularly publishes diagnostics about the state of the hardware. You can view them using the \betterhref{http://ros.org/wiki/robot\_monitor}{robot\_monitor} utility. This way you can monitor the different state of the motors, the sensors, etc...
 
 \newpage
 
