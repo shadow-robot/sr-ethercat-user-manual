@@ -279,12 +279,12 @@ export INTERNAL_FIRMWARE=0
 \label{sec:start-simul-hand}
 \par To start the simulated robot you can simply run:
   \begin{lstlisting}[escapeinside='']
-> roslaunch sr_hand gazebo_hand.launch
+> roslaunch sr_hand gazebo_hand_motor.launch
   \end{lstlisting}
 
 \par Or if you want a simulated Shadow Arm as well as our hand:
   \begin{lstlisting}[escapeinside='']
-> roslaunch sr_hand gazebo_arm_and_hand.launch
+> roslaunch sr_hand gazebo_arm_and_hand_motor.launch
   \end{lstlisting}
 
 \subsection{Checking it works}
