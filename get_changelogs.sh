@@ -16,7 +16,7 @@ done;
 
 #run latexdiff against the backup
 bzr revert etherCAT_Hand_User_Manual.tex.bak
-latexdiff etherCAT_Hand_User_Manual.tex etherCAT_Hand_User_Manual.tex.bak >  etherCAT_Hand_User_Manual_diff.tex
+latexdiff etherCAT_Hand_User_Manual.tex.bak etherCAT_Hand_User_Manual.tex > etherCAT_Hand_User_Manual_diff.tex
 pdflatex etherCAT_Hand_User_Manual_diff.tex
 
 #then backup the current version of the tex file
