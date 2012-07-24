@@ -295,7 +295,7 @@ export INTERNAL_FIRMWARE=0
 \label{sec:checking-it-works}
 
 \subsubsection{Reading data out of the Hand}
-\par You can first have a look at the data coming out of the hand. The data is published on the \texttt{/joint\_states} topic (or \texttt{/gazebo/joint\_states} for the simulated hand). You'll see the incoming data streaming in your console. You have access to the joint names as well as the current positions, velocity and effort for each joint as shown below (stop with \texttt{ctrl+c}):
+\par You can first have a look at the data coming out of the hand. The data is published on the \texttt{/joint\_states} topic (or \texttt{/gazebo/joint\_states} for the simulated hand). You'll see the incoming data streaming in your console. You have access to the joint names as well as the current positions (in radians), velocity (in radians per second) and effort (an arbitrary value, proportional to the effort applied at the motor-end of the tendon.) for each joint as shown below (stop with \texttt{ctrl+c}):
   \begin{lstlisting}[escapeinside='']
 > rostopic echo /joint_states
 ---
