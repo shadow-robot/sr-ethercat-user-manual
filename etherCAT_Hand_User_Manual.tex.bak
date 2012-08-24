@@ -62,7 +62,11 @@
 \section{Overview}
 \label{sec:overview}
 
-\par This user manual will get you started with using our EtherCAT hand or simulated robots. We'll guide you through installing the code in \link{install}, show you some basic commands and code samples in \link{running-our-code}, and explain where to find things in \link{navigate}. This guide ends with some pointers to essential documentation you should read (\link{where-to-go}), and some troubleshooting tips (\link{what-do-if}). \\
+\par This user manual will get you started with using our EtherCAT hand or simulated robots. We'll guide you through installing the code in \link{install}, explain where to find things in \link{navigate} and show you some basic commands and code samples in \link{running-our-code}. This guide ends with some pointers to essential documentation you should read (\link{where-to-go}), and some troubleshooting tips (\link{what-do-if}). \\
+
+\par You can find below a kinematics diagram of the Shadow Hand. The joint names are indicated on the diagram. As a convention, and because of the way the Hand is actuated, the joint 1 and 2 for the first finger, middle finger, ring finger and little finger are grouped in the joint 0: \texttt{FFJ0 = FFJ1 + FFJ2}, \texttt{MFJ0 = MFJ1 + MFJ2}, etc.
+
+\includegraphics[width=\textwidth]{images/Hand_Kin_annotated.png}
 
 \par If you have any questions, don't hesitate to contact us at: \texttt{software@shadowrobot.com}.\\
 
@@ -72,30 +76,20 @@
 \label{sec:install}
 \par For a typical user, we really recommend installing our software directly from the apt repository (see section \ref{sec:install-apt}). This will ensure that you keep the latest released software on your computer.\\
 
-\par We assume you've already installed ROS electric, as detailed on \betterhref{http://www.ros.org/wiki/electric/Installation/Ubuntu}{the ROS Wiki}.\\
+\par We assume you've already installed ROS Fuerte, as detailed on \betterhref{http://www.ros.org/wiki/fuerte/Installation/Ubuntu}{the ROS Wiki}.\\
 
-\par However if you plan to modify some parts of our code, you can use an overlay to install some of the sources from our publicly available Launchpad repository on top of your existing installation.
+\par However if you plan to modify some parts of our code, you can use an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one. The path to the package in the overlay will be prepended to the ROS\_PACKAGE\_PATH, so it will be used instead of the default installed version.} to install some of the sources from our publicly available Launchpad repository on top of your existing installation.
 
-\subsection{From our apt repository (recommended)}
+\subsection{From ROS apt repository (recommended)}
 \label{sec:install-apt}
-\par You can install pre-built packages for \betterhref{http://releases.ubuntu.com/lucid/}{Ubuntu 10.04}. This is the easiest way of installing our software. You'll also receive updates automatically whenever you update your system.
+\par You can install pre-built packages for \betterhref{http://releases.ubuntu.com/precise/}{Ubuntu 12.04}. This is the easiest way of installing our software. You'll also receive updates automatically whenever you update your system.
 
-\begin{itemize}
-\item First you need to add our repository to your \texttt{sources.list}:
+Once you've installed ROS Fuerte, you can easily install our stacks:
   \begin{lstlisting}
-> sudo su -c 'echo "deb http://packages.shadow.local/ubuntu lucid \
-   main" > /etc/apt/sources.list.d/shadow.list
-> wget -O - http://packages.shadow.local/repo-key.pub | \
-   sudo apt-key add -
-> sudo apt-get update
+> sudo apt-get install ros-fuerte-shadow-robot \
+   ros-fuerte-shadow-robot-ethercat ros-fuerte-sr-visualization \
+   ros-fuerte-sr-teleop
   \end{lstlisting}
-
-\item You can now install our stacks: \todo{NEED ALL THE PACKAGES}
-  \begin{lstlisting}
-> sudo apt-get install ros-electric-shadow-robot
-  \end{lstlisting}
-
-\end{itemize}
 
 \subsubsection{Install a sr\_config overlay for the EtherCAT Hand}
 \label{sec:install-cfg}
@@ -105,7 +99,7 @@
 
 \subsection{From sources}
 \label{sec:install-src}
-\par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one.} to use the source version.\\
+\par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay to use the source version.\\
 
 \par To create an overlay, we'll use the \betterhref{http://ros.org/wiki/rosinstall}{rosinstall} utility. In this example, we'll overlay the \betterhref{http://launchpad.net/sr-config}{sr\_config} stack, using trunk version of the code hosted on launchpad using \betterhref{http://bazaar.canonical.com}{bzr}: \texttt{lp:sr-config}.
 
@@ -123,9 +117,9 @@
   local-name: sr_config      # name under which we install the stack
   \end{lstlisting}
 
-\item We're now going to create a workspace (in the \texttt{\linuxtilde/workspace} directory), based on your currently installed ROS system (we're assuming you're using ROS electric), and use the rosinstall file we created to download the code into it.
+\item We're now going to create a workspace (in the \texttt{\linuxtilde/workspace} directory), based on your currently installed ROS system (we're assuming you're using ROS Fuerte), and use the rosinstall file we created to download the code into it.
   \begin{lstlisting}[escapeinside='']
-> rosinstall '\linuxtilde'/workspace /opt/ros/electric/setup.bash
+> rosinstall '\linuxtilde'/workspace /opt/ros/fuerte/setup.bash
 > rosinstall '\linuxtilde'/workspace shadow_robot.rosinstall
   \end{lstlisting}
 
@@ -143,7 +137,7 @@
 \end{itemize}
 
 \subsubsection{Available rosinstall files}
-\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot-simple.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot-simple.rosinstall}.\\
+\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot-fuerte.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot-fuerte.rosinstall}.\\
 
 \par Once you've downloaded the code using the \texttt{rosinstall} commands described previously, you can build all our stacks:
   \begin{lstlisting}[escapeinside='']
@@ -157,7 +151,7 @@
 \par As described in \link{spec-system-param}, we're using a file to define some useful environment variables. To make sure the variables are imported in your setup, you need to source it in your \texttt{\linuxtilde/.bashrc}, after sourcing the ros setup.bash. It should look like this:
   \begin{lstlisting}[title={\textbf{\linuxtilde/.bashrc}}, upquote=true]
 #source the ros setup.bash
-/opt/ros/electric/setup.bash
+source /opt/ros/fuerte/setup.bash
 #or the one created in your workspace
 # if you used an overlay
 #source ~/workspace/setup.bash
@@ -178,7 +172,7 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \item \textbf{sr\_contrib:} contains experimental high level packages. If you write some interesting package, we'd be happy to add it to this stack.
 \item \textbf{sr\_visualization:} contains the GUI and visualisation tools.
 \item \textbf{sr\_teleop:} contains drivers for different tools used to teleoperate our hand (\betterhref{http://www.cyberglovesystems.com}{cyberglove}, ...)
-\item \textbf{sr\_config:} contains the config files. If you have one of our Hand, you should have an overlay of this config to make sure you don't loose your config when updating your system (as described in \link{install-src}).
+\item \textbf{sr\_config:} contains the configuration files. If you have one of our Hand, you should have an overlay of this configuration to make sure you don't loose your configuration when updating your system (as described in \link{install-src}).
 \end{itemize}
 
 \subsection{Important Packages}
@@ -279,19 +273,28 @@ export INTERNAL_FIRMWARE=0
 \label{sec:start-simul-hand}
 \par To start the simulated robot you can simply run:
   \begin{lstlisting}[escapeinside='']
-> roslaunch sr_hand gazebo_hand_motor.launch
+> roslaunch sr_hand gazebo_hand.launch
   \end{lstlisting}
 
 \par Or if you want a simulated Shadow Arm as well as our hand:
   \begin{lstlisting}[escapeinside='']
-> roslaunch sr_hand gazebo_arm_and_hand_motor.launch
+> roslaunch sr_hand gazebo_arm_and_hand.launch
+  \end{lstlisting}
+
+\subsection{Starting the GUI}
+\label{sec:start-gui}
+\par We're using the \betterhref{http://www.ros.org/wiki/rqt\_gui}{rqt\_gui} for driving the hand. We implemented some plugins to help you control the hand. They are all in the Shadow Robot item in the plugins menu.
+
+\par To start the GUI, you can simply run:
+  \begin{lstlisting}[escapeinside='']
+> rosrun rqt_gui rqt_gui
   \end{lstlisting}
 
 \subsection{Checking it works}
 \label{sec:checking-it-works}
 
 \subsubsection{Reading data out of the Hand}
-\par You can first have a look at the data coming out of the hand. The data is published on the \texttt{/joint\_states} topic (or \texttt{/gazebo/joint\_states} for the simulated hand). You'll see the incoming data streaming in your console. You have access to the joint names as well as the current positions, velocity and effort for each joint as shown below (stop with \texttt{ctrl+c}):
+\par You can first have a look at the data coming out of the hand. The data is published on the \texttt{/joint\_states} topic (or \texttt{/gazebo/joint\_states} for the simulated hand). You'll see the incoming data streaming in your console. You have access to the joint names as well as the current positions (in radians), velocity (in radians per second) and effort (an arbitrary value, proportional to the effort applied at the motor-end of the tendon.) for each joint as shown below (stop with \texttt{ctrl+c}):
   \begin{lstlisting}[escapeinside='']
 > rostopic echo /joint_states
 ---
