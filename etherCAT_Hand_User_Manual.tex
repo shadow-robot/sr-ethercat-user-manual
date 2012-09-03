@@ -112,14 +112,15 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 \item We're now going to create a workspace (in the \texttt{\linuxtilde/workspace} directory), based on your currently installed ROS system (we're assuming you're using ROS Fuerte), and add the stacks we want to overlay to the workspace. We'll then update the workspace to download the code into it.
   \begin{lstlisting}[escapeinside='']
 > rosws init '\linuxtilde'/workspace /opt/ros/fuerte
-> source '\linuxtilde'/workspace/setup.bash
+> source '\linuxtilde'/workspace/setup.sh
 > rosws set sr_config --bzr lp:sr-config
+> rosws update
   \end{lstlisting}
 
-\item To use the newly created environment, simply source the setup.bash created in the previous step (to have it sourced automatically when you open a new terminal, simply add it to your \texttt{\linuxtilde/.bashrc} as show on the second line).
+\item To use the newly created environment, simply source the setup.sh created in the previous step (to have it sourced automatically when you open a new terminal, simply add it to your \texttt{\linuxtilde/.bashrc} as show on the second line).
   \begin{lstlisting}[escapeinside='']
-> source '\linuxtilde'/workspace/setup.bash
-> echo source '\linuxtilde'/workspace/setup.bash >> '\linuxtilde'/.bashrc
+> source '\linuxtilde'/workspace/setup.sh
+> echo source '\linuxtilde'/workspace/setup.sh >> '\linuxtilde'/.bashrc
   \end{lstlisting}
 
 \item Finally, you can build the whole stack in one go using the \texttt{rosmake} command:
@@ -141,13 +142,13 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 
 \subsection{Import our custom Environment Variables}
 \label{sec:import-vars}
-\par As described in \link{spec-system-param}, we're using a file to define some useful environment variables. To make sure the variables are imported in your setup, you need to source it in your \texttt{\linuxtilde/.bashrc}, after sourcing the ros setup.bash. It should look like this:
+\par As described in \link{spec-system-param}, we're using a file to define some useful environment variables. To make sure the variables are imported in your setup, you need to source it in your \texttt{\linuxtilde/.bashrc}, after sourcing the ros setup.sh. It should look like this:
   \begin{lstlisting}[title={\textbf{\linuxtilde/.bashrc}}, upquote=true]
-#source the ros setup.bash
-source /opt/ros/fuerte/setup.bash
+#source the ros setup.sh
+source /opt/ros/fuerte/setup.sh
 #or the one created in your workspace
 # if you used an overlay
-#source ~/workspace/setup.bash
+#source ~/workspace/setup.sh
 
 #now source our additional environment variables
 source `rosstack find sr_config`/bashrc/env_variables.bashrc
@@ -371,7 +372,7 @@ To do this, we can simply use the \texttt{rostopic pub} command. For example, to
 \subsection{Check your ROS setup}
 \par You can use very simple examples to check different things:
 \begin{itemize}
-\item Check you can access our stacks (if this command doesn't work, make sure you've installed the code properly and sourced the generated setup.bash as described in \link{install}):
+\item Check you can access our stacks (if this command doesn't work, make sure you've installed the code properly and sourced the generated setup.sh as described in \link{install}):
   \begin{lstlisting}[escapeinside='']
 > roscd shadow_robot
   \end{lstlisting}
