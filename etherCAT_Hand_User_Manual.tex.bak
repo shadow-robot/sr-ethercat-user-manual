@@ -101,26 +101,19 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 \label{sec:install-src}
 \par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay to use the source version.\\
 
-\par To create an overlay, we'll use the \betterhref{http://ros.org/wiki/rosinstall}{rosinstall} utility. In this example, we'll overlay the \betterhref{http://launchpad.net/sr-config}{sr\_config} stack, using trunk version of the code hosted on launchpad using \betterhref{http://bazaar.canonical.com}{bzr}: \texttt{lp:sr-config}.
+\par To create an overlay, we'll use the \betterhref{http://ros.org/wiki/rosws}{rosws} utility. In this example, we'll overlay the \betterhref{http://launchpad.net/sr-config}{sr\_config} stack, using trunk version of the code hosted on launchpad using \betterhref{http://bazaar.canonical.com}{bzr}: \texttt{lp:sr-config}.
 
 \begin{itemize}
-\item First we need to install the rosinstall utility if you haven't done so already:
+\item First we need to install the rosws/rosinstall utilities if you haven't done so already (you've probably already installed this when following the ROS wiki instructions):
   \begin{lstlisting}[language=Bash]
-> sudo apt-get install python-setuptools bzr
-> sudo easy_install -U rosinstall vcstools
+> sudo apt-get install python-rosinstall python-rosdep bzr
   \end{lstlisting}
 
-\item We can now create a rosinstall file that will contain the information about the stacks we want to overlay (in our case we're overlaying the sr\_config stack only):
-  \begin{lstlisting}[title={\textbf{shadow\_robot.rosinstall}}, language=Python]
-- bzr:                       # VCS used (bzr in our case)
-  uri: 'lp:sr-config'        # public uri for the code
-  local-name: sr_config      # name under which we install the stack
-  \end{lstlisting}
-
-\item We're now going to create a workspace (in the \texttt{\linuxtilde/workspace} directory), based on your currently installed ROS system (we're assuming you're using ROS Fuerte), and use the rosinstall file we created to download the code into it.
+\item We're now going to create a workspace (in the \texttt{\linuxtilde/workspace} directory), based on your currently installed ROS system (we're assuming you're using ROS Fuerte), and add the stacks we want to overlay to the workspace. We'll then update the workspace to download the code into it.
   \begin{lstlisting}[escapeinside='']
-> rosinstall '\linuxtilde'/workspace /opt/ros/fuerte/setup.bash
-> rosinstall '\linuxtilde'/workspace shadow_robot.rosinstall
+> rosws init '\linuxtilde'/workspace /opt/ros/fuerte
+> source '\linuxtilde'/workspace/setup.bash
+> rosws set sr_config --bzr lp:sr-config
   \end{lstlisting}
 
 \item To use the newly created environment, simply source the setup.bash created in the previous step (to have it sourced automatically when you open a new terminal, simply add it to your \texttt{\linuxtilde/.bashrc} as show on the second line).
