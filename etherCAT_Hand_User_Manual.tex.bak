@@ -131,6 +131,8 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 \end{itemize}
 
 \subsubsection{Available rosinstall files}
+\par This step is only recommended for people who are going to be heavily modifying our stacks (or for those who are not using ubuntu, and thus can't use the pre-built packages).\\
+
 \par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot-fuerte.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot-fuerte.rosinstall}.\\
 
 \par Once you've downloaded the code using the \texttt{rosinstall} commands described previously, you can build all our stacks:
