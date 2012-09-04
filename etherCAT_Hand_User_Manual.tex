@@ -123,9 +123,20 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 > echo source '\linuxtilde'/workspace/setup.sh >> '\linuxtilde'/.bashrc
   \end{lstlisting}
 
+\item To install the system dependencies, we'll use the \betterhref{http://ros.org/doc/api/rosdep2/html/overview.html}{rosdep} utility. This utility needs to be initialised the first time you use it:
+  \begin{lstlisting}[escapeinside='']
+> sudo rosdep init
+> rosdep update
+  \end{lstlisting}
+
+\item You now have the up-to-date database of system dependencies on your system. You can install the dependencies for the stack you want to build:
+  \begin{lstlisting}[escapeinside='']
+> rosdep install sr_config
+  \end{lstlisting}
+
 \item Finally, you can build the whole stack in one go using the \texttt{rosmake} command:
   \begin{lstlisting}[escapeinside='']
-> rosmake --rosdep-install --rosdep-yes sr_config
+> rosmake sr_config
   \end{lstlisting}
 
 \end{itemize}
