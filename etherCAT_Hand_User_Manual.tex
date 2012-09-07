@@ -222,10 +222,11 @@ export MUSCLE=0
 #set to 1 if you want to build the compatibility interface
 # for the etherCAT hand (makes it possible to run  your programs
 # developed for the CAN Hand on the etherCAT hand)
-# default is 1 as it just builds an other node.
+# default is 1 as it just builds another node.
 export ETHERCAT=1
 
 #port in which the etherCAT hand is plugged in
+# (more info in section 4.1.1)
 export ETHERCAT_PORT=eth1
 
 #set to 1 if you're using PWM control on the etherCAT hand motors by default
@@ -327,7 +328,13 @@ velocity: [0.0002164649710794793, 0.0015999764385997265, ...]
 effort: [0.0, 0.0, 0.0, 0.0, ...]
   \end{lstlisting}
 
-\par You should also be able to visualise the current state of the robot using \betterhref{http://www.ros.org/wiki/rviz}{rviz}.
+\par You should also be able to visualise the current state of the robot using \betterhref{http://www.ros.org/wiki/rviz}{rviz}.\\
+
+\par To start rviz run the command below. You'll need to select a base link and add a Robot Model from the ``add'' button in rviz.
+\begin{lstlisting}[escapeinside='']
+> rosrun rviz rviz
+\end{lstlisting}
+
 \begin{center}
 \includegraphics[width=0.5\textwidth]{images/rviz.png}
 \end{center}
