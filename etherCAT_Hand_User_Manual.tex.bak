@@ -1,6 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage[pdftex]{graphicx}
 \usepackage[T1]{fontenc}
+\setcounter{secnumdepth}{5}
 \usepackage{textcomp}
 \usepackage{hyperref}
 \hypersetup{
@@ -80,7 +81,8 @@
 
 \par However if you plan to modify some parts of our code, you can use an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one. The path to the package in the overlay will be prepended to the ROS\_PACKAGE\_PATH, so it will be used instead of the default installed version.} to install some of the sources from our publicly available Launchpad repository on top of your existing installation.
 
-\subsection{From ROS apt repository (recommended)}
+\subsection{Installing Routes}
+\subsubsection{From ROS apt repository (recommended)}
 \label{sec:install-apt}
 \par You can install pre-built packages for \betterhref{http://releases.ubuntu.com/precise/}{Ubuntu 12.04}. This is the easiest way of installing our software. You'll also receive updates automatically whenever you update your system.
 
@@ -91,13 +93,13 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
    ros-fuerte-sr-teleop
   \end{lstlisting}
 
-\subsubsection{Install a sr\_config overlay for the EtherCAT Hand}
+\paragraph{Install a sr\_config overlay for the EtherCAT Hand}
 \label{sec:install-cfg}
 \par If you have an EtherCAT Hand, you should create an overlay for the \texttt{sr\_config} stack: this stack contains all the different configuration files which can be modified to reflect your specific system. You shouldn't use the one installed by default as they are defined for the simulated hand.\\
 
 \par To create this overlay, just follow \link{install-src}.
 
-\subsection{From sources}
+\subsubsection{From sources}
 \label{sec:install-src}
 \par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay to use the source version.\\
 
@@ -141,16 +143,17 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 
 \end{itemize}
 
-\subsubsection{Available rosinstall files}
+\paragraph{Available rosinstall files}
 \par This step is only recommended for people who are going to be heavily modifying our stacks (or for those who are not using ubuntu, and thus can't use the pre-built packages).\\
 
 \par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot-fuerte.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot-fuerte.rosinstall}.\\
 
 \par Once you've downloaded the code using the \texttt{rosinstall} commands described previously, you can build all our stacks:
   \begin{lstlisting}[escapeinside='']
-> rosmake --rosdep-install --rosdep-yes shadow_robot \
-  shadow_robot_ethercat sr_contrib sr_visualization \
-  sr_teleop
+> rosdep install shadow_robot shadow_robot_ethercat\
+  sr_contrib sr_visualization sr_teleop
+> rosmake shadow_robot shadow_robot_ethercat\
+  sr_contrib sr_visualization sr_teleop
   \end{lstlisting}
 
 \subsection{Import our custom Environment Variables}
@@ -172,33 +175,24 @@ source `rosstack find sr_config`/bashrc/env_variables.bashrc
 \section{Navigating our code}
 \label{sec:navigate}
 
-\par Our code is splitted into different stacks, each containing a set of packages:
+\par Our code is split into different stacks, each containing a set of packages:
 \begin{itemize}
 \item \textbf{shadow\_robot:} contains simulation software, utility packages, ... This is the core stack.
 \item \textbf{shadow\_robot\_ethercat:} contains the code for running our etherCAT hand.
-\item \textbf{sr\_contrib:} contains experimental high level packages. If you write some interesting package, we'd be happy to add it to this stack.
+\item \textbf{sr\_contrib:} contains experimental high level packages. If you write an interesting package, we'd be happy to add it to this stack.
 \item \textbf{sr\_visualization:} contains the GUI and visualisation tools.
 \item \textbf{sr\_teleop:} contains drivers for different tools used to teleoperate our hand (\betterhref{http://www.cyberglovesystems.com}{cyberglove}, ...)
-\item \textbf{sr\_config:} contains the configuration files. If you have one of our Hand, you should have an overlay of this configuration to make sure you don't loose your configuration when updating your system (as described in \link{install-src}).
+\item \textbf{sr\_config:} contains the configuration files. If you have one of our Hands, you should have an overlay of this configuration to make sure you don't lose your configuration when updating your system (as described in \link{install-src}).
 \end{itemize}
 
-\subsection{Important Packages}
-\label{sec:important-packages}
-\begin{itemize}
-\item \textbf{sr\_hand:} Contains the code and the different launch files for the simulated Hand and the CAN hand.
-\item \textbf{sr\_edc\_launch:} Contains the main launch file for the EtherCAT Hand.
-\item \textbf{sr\_example:} Contains some simple code examples.
-\end{itemize}
-
-
-\subsection{Where to find the settings}
+\subsection{Configuration and settings}
 \label{sec:where-find-settings}
 \par We moved all the configuration to the \texttt{sr\_config} stack. The idea is to isolate the data that is specific to the user in a given stack, this way you can easily create an overlay, as described in \link{install}, to make sure your specific configuration is not overwritten by an update.
 
 \subsubsection{Specifying system parameters}
 \label{sec:spec-system-param}
 \par The system parameters are specified in the file
-\href{http://bazaar.launchpad.net/~shadowrobot/sr-config/trunk/view/head:/bashrc/env_variables.bashrc}{env\_variables.bashrc}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-config/trunk/view/head:/bashrc/env\_variables.bashrc}. To load them automatically in your environment, please go to \link{import-vars}. This File is heavily commented and should be easy to modify to suit your installation (the default options should be ok for most users).\footnote{If you bought an etherCAT hand, the system you'll receive from Shadow will already be configured properly for you. There are no variables stating that you have an etherCAT hand in this file, because the launch file for starting the simulator and the one used to run the hand are different, as you can see in this manual.}
+\href{http://bazaar.launchpad.net/~shadowrobot/sr-config/trunk/view/head:/bashrc/env_variables.bashrc}{env\_variables.bashrc}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-config/trunk/view/head:/bashrc/env\_variables.bashrc}. To load them automatically in your environment, please go to \link{import-vars}. This File is heavily commented and should be easy to modify to suit your installation (\textbf{the default options should be ok for most users}).\footnote{If you bought an etherCAT hand, the system you'll receive from Shadow will already be configured properly for you. There are no variables stating that you have an etherCAT hand in this file, because the launch file for starting the simulator and the one used to run the hand are different, as you can see in this manual.}
 
   \begin{lstlisting}[title={\textbf{env\_variables.bashrc}}, upquote=true]
 #set to 1 to compile sr_hand and sr_tactiles with the gazebo interface
@@ -247,7 +241,15 @@ export DEBUG=1
 
 \subsubsection{Specifying default controllers settings, and other useful settings}
 \label{sec:spec-defa-contr}
-\par The controller settings (as well as the different mappings and polling rates for the etherCAT hand) can be found in the \textbf{sr\_ethercat\_hand\_config} package. You can modify the controller values which will be loaded by default by modifying the files in this package. For example if you want to modify the mixed position velocity controllers, you can open \textbf{sr\_edc\_mixed\_position\_velocity\_joint\_controllers.yaml} (in \textbf{controls/host}). We recommend using the controller tuner GUI plugin for tuning and saving those parameters.
+\par The controller settings (as well as the different mappings and polling rates for the etherCAT hand) can be found in the \textbf{sr\_ethercat\_hand\_config} package. You can modify the controller values which will be loaded by default by modifying the files in this package. For example if you want to modify the mixed position velocity controllers, you can open \textbf{sr\_edc\_mixed\_position\_velocity\_joint\_controllers.yaml} (in \textbf{controls/host}). We recommend using the controller tuner GUI plugin (see section~\ref{sec:start-gui}) for tuning and saving those parameters.
+
+\subsection{Important Packages}
+\label{sec:important-packages}
+\begin{itemize}
+\item \textbf{sr\_hand:} Contains the code and the different launch files for the simulated Hand and the CAN hand.
+\item \textbf{sr\_edc\_launch:} Contains the main launch file for the EtherCAT Hand.
+\item \textbf{sr\_example:} Contains some simple code examples.
+\end{itemize}
 
 \newpage
 
@@ -258,7 +260,7 @@ export DEBUG=1
 \label{sec:starting-real-hand}
 
 \subsubsection{Setting up the Ethernet port}
-\par The first time you plug an EtherCAT Hand, you probably need to check on which Ethernet port the hand is connected (you probably have 2 network ports in your computer, one of them would typically be connected to the network, the other one to the hand).\\
+\par The first time you connect an EtherCAT Hand, you will need to check on which Ethernet port the hand is connected to. Usually, you will have 2 network ports in your computer, one for your network, the other one for the hand.\\
 
 \par An easy way to see which port the hand is using is to unplug the hand network cable from your computer and then plug it back in. You can now type \texttt{dmesg} and you should see a line saying which port has just been plugged in, for example, in the lines below, you see that \texttt{eth1} is used by the hand:
   \begin{lstlisting}[escapeinside='']
@@ -301,18 +303,19 @@ export DEBUG=1
 
 \subsection{Starting the GUI}
 \label{sec:start-gui}
-\par We're using the \betterhref{http://www.ros.org/wiki/rqt\_gui}{rqt\_gui} for driving the hand. We implemented some plugins to help you control the hand. They are all in the Shadow Robot item in the plugins menu.
-
-\par To start the GUI, you can simply run:
+\par To start the GUI, run:
   \begin{lstlisting}[escapeinside='']
 > rosrun rqt_gui rqt_gui
   \end{lstlisting}
+
+\par We're using the \betterhref{http://www.ros.org/wiki/rqt\_gui}{rqt\_gui} for driving the hand. We implemented some plugins to help you control the hand. They are all in the Shadow Robot item in the plugins menu.
 
 \subsection{Checking it works}
 \label{sec:checking-it-works}
 
 \subsubsection{Reading data out of the Hand}
-\par You can first have a look at the data coming out of the hand. The data is published on the \texttt{/joint\_states} topic (or \texttt{/gazebo/joint\_states} for the simulated hand). You'll see the incoming data streaming in your console. You have access to the joint names as well as the current positions (in radians), velocity (in radians per second) and effort (an arbitrary value, proportional to the effort applied at the motor-end of the tendon.) for each joint as shown below (stop with \texttt{ctrl+c}):
+\par First look at the data coming out of the hand.
+
   \begin{lstlisting}[escapeinside='']
 > rostopic echo /joint_states
 ---
@@ -328,6 +331,8 @@ velocity: [0.0002164649710794793, 0.0015999764385997265, ...]
 effort: [0.0, 0.0, 0.0, 0.0, ...]
   \end{lstlisting}
 
+\par The data is published on the \texttt{/joint\_states} topic (or \texttt{/gazebo/joint\_states} for the simulated hand). You will see the incoming data streaming in your console. You have access to the joint names as well as the current positions (in radians), velocity (in radians per second) and effort (an arbitrary value, proportional to the effort applied at the motor-end of the tendon.) for each joint as shown below (stop with \texttt{ctrl+c}):
+
 \par You should also be able to visualise the current state of the robot using \betterhref{http://www.ros.org/wiki/rviz}{rviz}.\\
 
 \par To start rviz run the command below. You'll need to select a base link and add a Robot Model from the ``add'' button in rviz.
@@ -340,7 +345,7 @@ effort: [0.0, 0.0, 0.0, 0.0, ...]
 \end{center}
 
 \subsubsection{Reading the tactile sensors}
-\par Depending on the configuration of your hand, you can have different models of tactile sensors. Your sensor type is automatically detected by the driver which then publishes the correct information on \texttt{/tactile} topic. The following command will output the data coming from the sensors on the screen.
+\par Depending on the configuration of your hand, you may have different types of tactile sensors. Your sensor type is automatically detected by the driver which then publishes the correct information on the \texttt{/tactile} topic. The following command will output the data coming from the sensors on the screen.
   \begin{lstlisting}[escapeinside='']
 > rostopic echo /tactile
   \end{lstlisting}
@@ -360,7 +365,7 @@ effort: [0.0, 0.0, 0.0, 0.0, ...]
 \end{itemize}
 
 \subsubsection{Sending Commands to the Hand}
-\par You can easily control the different joints of the Hand: each of the joint is controlled by a controller. Each of those controllers have a \texttt{/command} and a \texttt{/state} topic. The \texttt{/state} topic is printing useful debug information regarding the controllers, while the \texttt{/command} topic is used to send new targets to the controllers.\\
+\par You can easily control the different joints of the Hand: each of the joint is controlled by a controller. Each of those controllers has a \texttt{/command} and a \texttt{/state} topic. The \texttt{/state} topic prints useful debug information regarding the controllers, while the \texttt{/command} topic is used to send new targets to the controllers.\\
 
 \par To identify the topic on which you want to send the target, you can use the \texttt{rostopic list} command. Let's say we want to send a target to \texttt{FFJ3}:
   \begin{lstlisting}[escapeinside='']
@@ -382,18 +387,22 @@ To do this, we can simply use the \texttt{rostopic pub} command. For example, to
 \subsubsection{Getting information on the current state of the controllers}
 \par As you can see above, each controller publishes its own \texttt{/state} topic. This topic contains lots of useful information regarding the current state of the controller. If you subscribe to it, you'll be able to have access to the current target, position, error, derivative, etc...
 
+\todo{list everything from controller topic?}
+
 \subsubsection{Checking the diagnostics}
 \par The etherCAT Hand regularly publishes diagnostics about the state of the hardware. You can view them using the \betterhref{http://ros.org/wiki/robot\_monitor}{robot\_monitor} utility. This way you can monitor the different state of the motors, the sensors, etc...
+
+\todo{list everything from diagnostics?}
 
 \newpage
 
 \section{Where to go next}
 \label{sec:where-to-go}
-\par The \href{http://ros.org/wiki}{ROS wiki} is probably the best place to start learning about ROS. We strongly recommend going through the excellent \href{http://ros.org/wiki/ROS/StartGuide}{ROS Start Guide}, especially the set of \href{http://ros.org/wiki/ROS/Tutorials}{tutorials}.\\
+\par The \betterhref{http://ros.org/wiki}{ROS wiki} is probably the best place to start learning about ROS. We strongly recommend going through the excellent \betterhref{http://ros.org/wiki/ROS/StartGuide}{ROS Start Guide}, especially the set of \betterhref{http://ros.org/wiki/ROS/Tutorials}{tutorials}.\\
 
-\par You should also look at some of our tutorials for the \href{http://ros.org/wiki/shadow_robot_etherCAT/Tutorials}{EtherCAT Hand}.\\
+\par You should also look at some of our tutorials for the \href{http://ros.org/wiki/shadow_robot_etherCAT/Tutorials}{EtherCAT Hand}\footnote{url: http://ros.org/wiki/shadow\_robot\_etherCAT/Tutorials}.\\
 
-\par We'd be delighted to get your contributions (patches, nice demos, etc...). Don't forget our software is open-source, so if you want to contribute, you should probably check this \href{http://ros.org/wiki/shadow_robot#Contributing}{wiki page} out.
+\par We'd be delighted to get your contributions (patches, nice demos, etc...). Don't forget our software is open-source, so if you want to contribute, you should probably check this \href{http://ros.org/wiki/shadow_robot#Contributing}{wiki page}\footnote{url: http://ros.org/wiki/shadow\_robot\#Contributing} out.
 \newpage
 
 \section{What to do if it doesn't work}
@@ -402,16 +411,19 @@ To do this, we can simply use the \texttt{rostopic pub} command. For example, to
 \subsection{Check your ROS setup}
 \par You can use very simple examples to check different things:
 \begin{itemize}
-\item Check you can access our stacks (if this command doesn't work, make sure you've installed the code properly and sourced the generated setup.sh as described in \link{install}):
+\item Check you can access our stacks (if this command doesn't get you to the shadow\_robot folder, make sure you've installed the code properly and sourced the generated setup.sh as described in \link{install}):
   \begin{lstlisting}[escapeinside='']
 > roscd shadow_robot
   \end{lstlisting}
 
-\item Check you can publish and subscribe to a simple topic. You'll need to start each of the following commands in a separate terminal. The first command is used to start the rosmaster. The second one will publish some data on the \texttt{test} topic while the third command subscribes to the topic and print the output on the screen. If this test works, you should see the incoming data streaming in your third terminal.
+\item Check you can publish and subscribe to a simple topic. You'll need to start each of the following commands in a separate terminal. The first command is used to start the \texttt{rosmaster}. The second one will publish some data on the \texttt{test} topic while the third command subscribes to the topic and print the output on the screen. If this test works, you should see the incoming data streaming in your third terminal.
 
   \begin{lstlisting}[escapeinside='']
 #in terminal 1, start the rosmaster
-> roscore
+# we start it in a separate xterm window
+# as you need to keep it running during
+# the whole experience
+> xterm -e roscore &
 #in terminal 2 publish data at 5Hz on /test
 > rostopic pub /test std_msgs/Float64 -r 5 1.0
 #in terminal 3, subscribe to the /test topic
@@ -425,12 +437,12 @@ data: 1.0
 data: 1.0
   \end{lstlisting}
 
-\item If all hope is lost, run the \href{http://ros.org/wiki/roswtf}{roswtf} utility.
+\item If all hope is lost, run the \betterhref{http://ros.org/wiki/roswtf}{roswtf} utility.
 \end{itemize}
 
 \subsection{Use the ROS community}
 \label{sec:use-ros-community}
-\par A good thing to remember is that you're probably not the first one having run into this problem. You should check the ROS community website: \href{http://answers.ros.org}{answers.ros.org} and post your question if you can't find a relevant answer.
+\par A good thing to remember is that you're probably not the first one having run into this problem. You should check the ROS community website: \betterhref{http://answers.ros.org}{answers.ros.org} and post your question if you can't find a relevant answer.
 
 \subsection{Contact us}
 \par Don't hesitate to contact us: \texttt{software@shadowrobot.com}.
