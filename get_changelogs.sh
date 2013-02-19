@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #first we delete the existing changelog:
-rm -rf changelogs/*
+rm -rf changelogs
+mkdir changelogs
 
 TMP_STACKS=`awk < $1 ' $1=="local-name:" { print $2 }'`
 #split in an array
@@ -15,7 +16,7 @@ for (( i = 0 ; i < ${#STACKS[@]} ; i++ )); do
 done;
 
 #run latexdiff against the backup
-bzr revert etherCAT_Hand_User_Manual.tex.bak
+git checkout -- etherCAT_Hand_User_Manual.tex.bak
 latexdiff etherCAT_Hand_User_Manual.tex.bak etherCAT_Hand_User_Manual.tex > etherCAT_Hand_User_Manual_diff.tex
 pdflatex etherCAT_Hand_User_Manual_diff.tex
 

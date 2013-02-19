@@ -79,7 +79,7 @@
 
 \par We assume you've already installed ROS Fuerte, as detailed on \betterhref{http://www.ros.org/wiki/fuerte/Installation/Ubuntu}{the ROS Wiki}.\\
 
-\par However if you plan to modify some parts of our code, you can use an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one. The path to the package in the overlay will be prepended to the ROS\_PACKAGE\_PATH, so it will be used instead of the default installed version.} to install some of the sources from our publicly available Launchpad repository on top of your existing installation.
+\par However if you plan to modify some parts of our code, you can use an overlay\footnote{\textbf{Overlay:} use another version of a stack than the default installed one. The path to the package in the overlay will be prepended to the ROS\_PACKAGE\_PATH, so it will be used instead of the default installed version.} to install some of the sources from our publicly available Github repository on top of your existing installation.
 
 \subsection{Installing Routes}
 \subsubsection{From ROS apt repository (recommended)}
@@ -103,19 +103,21 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 \label{sec:install-src}
 \par If you need to modify one of the packages for your own use, you'll want to first install the released version from the apt repository as explained in \link{install-apt}. This will ensure that you have all the code you need. Once you've identified in which stack the package you want to modify is, you can create an overlay to use the source version.\\
 
-\par To create an overlay, we'll use the \betterhref{http://ros.org/wiki/rosws}{rosws} utility. In this example, we'll overlay the \betterhref{http://launchpad.net/sr-config}{sr\_config} stack, using trunk version of the code hosted on launchpad using \betterhref{http://bazaar.canonical.com}{bzr}: \texttt{lp:sr-config}.
+\par To create an overlay, we'll use the \betterhref{http://ros.org/wiki/rosws}{rosws} utility. In this example, we'll overlay the \betterhref{https://github.com/shadow-robot/sr-config}{sr\_config} stack, using ROS\_release\_fuerte version of the code hosted on github using \betterhref{http://git-scm.com/}{git}: \texttt{https://github.com/shadow-robot/sr-config}
 
 \begin{itemize}
 \item First we need to install the rosws/rosinstall utilities if you haven't done so already (you've probably already installed this when following the ROS wiki instructions):
   \begin{lstlisting}[language=Bash]
-> sudo apt-get install python-rosinstall python-rosdep bzr
+> sudo apt-get install python-rosinstall python-rosdep git
   \end{lstlisting}
 
 \item We're now going to create a workspace (in the \texttt{\linuxtilde/workspace} directory), based on your currently installed ROS system (we're assuming you're using ROS Fuerte), and add the stacks we want to overlay to the workspace. We'll then update the workspace to download the code into it.
   \begin{lstlisting}[escapeinside='']
 > rosws init '\linuxtilde'/workspace /opt/ros/fuerte
 > source '\linuxtilde'/workspace/setup.bash
-> rosws set sr_config --bzr lp:sr-config
+> rosws set sr_config \
+   --git https://github.com/shadow-robot/sr-config.git \
+   --version ROS_release_fuerte
 > rosws update
   \end{lstlisting}
 
@@ -146,7 +148,7 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
 \paragraph{Available rosinstall files}
 \par This step is only recommended for people who are going to be heavily modifying our stacks (or for those who are not using ubuntu, and thus can't use the pre-built packages).\\
 
-\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{http://bazaar.launchpad.net/~shadowrobot/sr-build-tools/trunk/view/head:/data/shadow_robot-fuerte.rosinstall}{here}\footnote{url: http://bazaar.launchpad.net/\linuxtilde shadowrobot/sr-build-tools/trunk/view/head:/data/shadow\_robot-fuerte.rosinstall}.\\
+\par If you want to install all our stacks in one go, you can use the \texttt{rosinstall} files available \href{https://github.com/shadow-robot/sr-build-tools/blob/F_github/data/shadow_robot-fuerte.rosinstall}{here}\footnote{url: https://github.com/shadow-robot/sr-build-tools/blob/F\_github/data/shadow\_robot-fuerte.rosinstall}.\\
 
 \par Once you've downloaded the code using the \texttt{rosinstall} commands described previously, you can build all our stacks:
   \begin{lstlisting}[escapeinside='']
