@@ -1,0 +1,15 @@
+The variable ROSINSTALL must contain the path to the .rosinstall file.
+
+This rosinstall file must be in the multiline format, not in the more compact one. Otherwise the script will fail to find the stacks and won't be able to add the changelogs to the manual.
+
+e.g.
+
+- git:
+    uri: 'git@github.com:shadow-robot/sr-ros-interface.git'
+    version: 'development'
+    local-name: shadow_robot
+
+not
+
+- git: {uri: 'git@github.com:shadow-robot/sr-ros-interface.git', version: 'development', local-name: shadow_robot}
+
