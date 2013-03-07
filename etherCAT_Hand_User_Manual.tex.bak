@@ -115,9 +115,10 @@ Once you've installed ROS Fuerte, you can easily install our stacks:
   \begin{lstlisting}[escapeinside='']
 > rosws init '\linuxtilde'/workspace /opt/ros/fuerte
 > source '\linuxtilde'/workspace/setup.bash
+> cd '\linuxtilde'/workspace
 > rosws set sr_config \
    --git https://github.com/shadow-robot/sr-config.git \
-   --version ROS_release_fuerte
+   --v ROS_release_fuerte
 > rosws update
   \end{lstlisting}
 
